@@ -11,7 +11,9 @@ PORT = 8080
 OUTPUT_DIR = "hls_output"
 os.makedirs(os.path.abspath(OUTPUT_DIR), exist_ok=True)
 
-TARGET_STREAM = 'http://sanstv.com:2052/live/02025653909649/02025653909649/402504.m3u8'
+# ضع رابط البث الأصلي الشغال هنا بين العلامتين
+TARGET_STREAM = 'ضع_رابط_البث_هنا'
+
 local_m3u8_input = os.path.join(os.path.abspath(OUTPUT_DIR), 'local_input.m3u8')
 output_m3u8_path = os.path.join(os.path.abspath(OUTPUT_DIR), 'output.m3u8')
 
@@ -53,6 +55,7 @@ def start_ffmpeg():
     
     ffmpeg_cmd = [
         'ffmpeg', '-re',
+        '-headers', 'User-Agent: ExoPlayerLib/2.18.1 (Linux;Android 11)\r\nAccept: */*\r\n',
         '-protocol_whitelist', 'file,http,https,tcp,tls,crypto,data',
         '-i', local_m3u8_input,
         '-vf', "scale=1280:720,drawtext=text='KIDN TV':fontcolor=white:fontsize=30:x=(w-text_w)/2:y=(h-text_h)/2:box=1:boxcolor=black@0.5",
