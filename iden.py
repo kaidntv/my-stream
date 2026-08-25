@@ -11,7 +11,7 @@ PORT = 8080
 OUTPUT_DIR = "hls_output"
 os.makedirs(os.path.abspath(OUTPUT_DIR), exist_ok=True)
 
-TARGET_STREAM = 'http://hydratv.pro:80/live/076431648/0977842887/415773.m3u8'
+TARGET_STREAM = 'http://sanstv.com:2052/live/02025653909649/02025653909649/402504.m3u8'
 local_m3u8_input = os.path.join(os.path.abspath(OUTPUT_DIR), 'local_input.m3u8')
 output_m3u8_path = os.path.join(os.path.abspath(OUTPUT_DIR), 'output.m3u8')
 
