@@ -11,8 +11,8 @@ PORT = 8080
 OUTPUT_DIR = "hls_output"
 os.makedirs(os.path.abspath(OUTPUT_DIR), exist_ok=True)
 
-# ضع رابط البث الأصلي الشغال هنا بين العلامتين
-TARGET_STREAM = 'ضع_رابط_البث_هنا'
+# ضع رابط البث الأصلي الشغال هنا بين علامتي التنصيص
+TARGET_STREAM = 'http://sanstv.com:2052/live/02025653909649/02025653909649/402504.m3u8'
 
 local_m3u8_input = os.path.join(os.path.abspath(OUTPUT_DIR), 'local_input.m3u8')
 output_m3u8_path = os.path.join(os.path.abspath(OUTPUT_DIR), 'output.m3u8')
@@ -54,7 +54,8 @@ def start_ffmpeg():
         time.sleep(2)
     
     ffmpeg_cmd = [
-        'ffmpeg', '-re',
+        'ffmpeg', 
+        '-fflags', 'nobuffer+discardcorrupt',
         '-headers', 'User-Agent: ExoPlayerLib/2.18.1 (Linux;Android 11)\r\nAccept: */*\r\n',
         '-protocol_whitelist', 'file,http,https,tcp,tls,crypto,data',
         '-i', local_m3u8_input,
@@ -66,16 +67,16 @@ def start_ffmpeg():
         '-c:a', 'copy',
         '-f', 'hls',
         '-hls_time', '2',
-        '-hls_list_size', '30',
-        '-hls_flags', 'delete_segments+append_list',
+        '-hls_list_size', '5',
+        '-hls_flags', 'delete_segments+append_list+omit_endlist',
         output_m3u8_path
     ]
     
     while True:
-        print("[+] بدء معالجة وبث الفيديو عبر FFmpeg...")
+        print("[+] بدء معالجة وبث الفيديو الفوري عبر FFmpeg...")
         subprocess.run(ffmpeg_cmd)
-        print("[-] إعادة تشغيل المعالجة خلال ثانيتين...")
-        time.sleep(2)
+        print("[-] إعادة مزامنة البث المباشر...")
+        time.sleep(1)
 
 class HLSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
