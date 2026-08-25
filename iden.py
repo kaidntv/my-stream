@@ -43,12 +43,13 @@ def update_manifest_loop():
                     f.write(updated_data)
                 os.replace(tmp_file, local_m3u8_input)
         except Exception as e:
-            pass
+            print(f"[!] تنبيه في جلب المصدر: {e}")
         time.sleep(2)
 
 def start_ffmpeg():
     while not os.path.exists(local_m3u8_input):
-        time.sleep(1)
+        print("[-] بانتظار توفر ملف المصدر الأول...")
+        time.sleep(2)
     
     ffmpeg_cmd = [
         'ffmpeg', '-re',
@@ -68,7 +69,7 @@ def start_ffmpeg():
     ]
     
     while True:
-        print("[+] بدء معالجة البث بدقة محسنة وسلسة...")
+        print("[+] بدء معالجة وبث الفيديو عبر FFmpeg...")
         subprocess.run(ffmpeg_cmd)
         print("[-] إعادة تشغيل المعالجة خلال ثانيتين...")
         time.sleep(2)
@@ -85,20 +86,14 @@ class HLSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             return "video/mp2t"
         return super().guess_type(path)
 
-    def copyfile(self, source, outputfile):
-        try:
-            super().copyfile(source, outputfile)
-        except (BrokenPipeError, ConnectionResetError):
-            pass
-
     def log_message(self, format, *args):
         return
 
 def start_server():
     os.chdir(os.path.abspath(OUTPUT_DIR))
     with socketserver.TCPServer(("", PORT), HLSHTTPRequestHandler) as httpd:
-        print(f"\n[✔] السيرفر يعمل الآن بسلاسة تامة وبدون تقطيع!")
-        print(f"[🔗] رابط البث المحلي: http://127.0.0.1:{PORT}/output.m3u8\n")
+        print(f"\n[✔] السيرفر يعمل الآن!")
+        print(f"[🔗] رابط البث: http://127.0.0.1:{PORT}/output.m3u8\n")
         httpd.serve_forever()
 
 if __name__ == "__main__":
